@@ -20,7 +20,7 @@ def query_books_in_library(library_name):
 
 def query_librarian_for_library(library_name):
     # retrieving the librarian for a library
-    librarian = Librarian.objects.get(library__name="library_name")
+    librarian = Librarian.objects.get(library=Library.objects.get(name=library_name))
     print(f"\nLibrarian for {library_name}: {librarian.name}")
     return librarian
 
