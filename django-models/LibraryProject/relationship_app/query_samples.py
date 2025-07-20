@@ -2,7 +2,7 @@ from relationship_app.models import Author, Book, Library, Librarian
 
 def query_books_by_author(author_name):
     # querying all books by a specific author
-    author = Author.objects.get(name="author_name")
+    author = Author.objects.get(name=author_name)
     books = Book.objects.filter(author=author)
     print(f"Books by {author_name}:")
     for book in books:
@@ -11,7 +11,7 @@ def query_books_by_author(author_name):
 
 def query_books_in_library(library_name):
     # listing all books in a library
-    library = Library.objects.get(name="library_name")
+    library = Library.objects.get(name=library_name)
     books = library.books.all()
     print(f"\nBooks in {library_name}:")
     for book in books:
