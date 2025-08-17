@@ -14,6 +14,7 @@ class TagWidget(forms.TextInput):
             default_attrs.update(attrs)
         super().__init__(attrs)
 
+tag_widget_instance = TagWidget() 
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
