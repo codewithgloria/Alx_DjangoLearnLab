@@ -95,13 +95,25 @@ def get_context_data(self, **kwargs):
     return context
 
 
-def posts_by_tag(request, tag_slug):
+class PostByTagListView(ListView):
     """
-    View to list all posts with a given tag.
+    Display all posts that have a specific tag.
     """
-    tag = get_object_or_404(Tag, slug=tag_slug)
-    posts = Post.objects.filter(tags__in=[tag])
-    return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
+    model = Post
+    template_name = 'blog/tag_posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        tag_slug = self.kwargs.get('tag_slug')
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        return Post.objects.filter(tags__in=[tag])
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag'] = get_object_or_404(Tag, slug=self.kwargs['tag_slug'])
+        return context
+
 
 def search_posts(request):
     """
