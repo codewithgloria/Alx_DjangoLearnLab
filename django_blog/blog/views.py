@@ -10,6 +10,8 @@ from .models import Post
 from django.http import HttpResponseRedirect
 from .models import Comment
 from .forms import CommentForm
+from django.db.models import Q
+from taggit.models import Tag
 
 # Authentication Views (from Task 1)
 def register(request):
@@ -91,6 +93,31 @@ def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['comment_form'] = CommentForm()
     return context
+
+
+def posts_by_tag(request, tag_slug):
+    """
+    View to list all posts with a given tag.
+    """
+    tag = get_object_or_404(Tag, slug=tag_slug)
+    posts = Post.objects.filter(tags__in=[tag])
+    return render(request, 'blog/tag_posts.html', {'tag': tag, 'posts': posts})
+
+def search_posts(request):
+    """
+    View to search posts by title, content, or tags.
+    """
+    query = request.GET.get('q')
+    posts = Post.objects.none()
+
+    if query:
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    return render(request, 'blog/search_results.html', {'posts': posts, 'query': query})
+
 
 # Blog Post CRUD Views
 class PostListView(ListView):
