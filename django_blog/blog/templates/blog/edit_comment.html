@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Comment</title>
+    <link rel="stylesheet" href="/static/blog/style.css">
+</head>
+<body>
+    <header><h1>Gloria's Django Blog</h1></header>
+    <main>
+        <h2>Edit Your Comment</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Update Comment</button>
+        </form>
+        <p><a href="{% url 'post_detail' comment.post.pk %}">Cancel</a></p>
+    </main>
+</body>
+</html>

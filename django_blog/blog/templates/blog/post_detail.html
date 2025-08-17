@@ -12,9 +12,35 @@
             <p><small>By {{ post.author.username }} on {{ post.published_date }}</small></p>
             <div>{{ post.content|linebreaks }}</div>
         </article>
-        {% if user == post.author %}
-        <p><a href="{% url 'post_update' post.pk %}">Edit</a> | <a href="{% url 'post_delete' post.pk %}">Delete</a></p>
+
+        <hr>
+        <h3>Comments</h3>
+        {% for comment in post.comments.all %}
+            <div style="margin-bottom: 20px; border-left: 3px solid #ccc; padding-left: 10px;">
+                <p>{{ comment.content }}</p>
+                <p><small>By {{ comment.author.username }} on {{ comment.created_at }}</small></p>
+                {% if user == comment.author %}
+                    <p>
+                        <a href="{% url 'edit_comment' comment.pk %}">Edit</a> |
+                        <a href="{% url 'delete_comment' comment.pk %}">Delete</a>
+                    </p>
+                {% endif %}
+            </div>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        {% if user.is_authenticated %}
+            <h4>Add a Comment</h4>
+            <form method="post" action="{% url 'add_comment' post.pk %}">
+                {% csrf_token %}
+                {{ comment_form.as_p }}
+                <button type="submit">Post Comment</button>
+            </form>
+        {% else %}
+            <p><a href="{% url 'login' %}">Login</a> to leave a comment.</p>
         {% endif %}
+
         <p><a href="{% url 'post_list' %}">← Back to all posts</a></p>
     </main>
 </body>

@@ -7,6 +7,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, PostForm
 from .models import Post
+from django.http import HttpResponseRedirect
+from .models import Comment
+from .forms import CommentForm
 
 # Authentication Views (from Task 1)
 def register(request):
@@ -47,6 +50,48 @@ def profile(request):
         return render(request, 'blog/profile.html', {'user': user, 'success': True})
     return render(request, 'blog/profile.html', {'user': request.user})
 
+@login_required
+def add_comment(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
+            comment.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = CommentForm()
+    return render(request, 'blog/add_comment.html', {'form': form})
+
+@login_required
+def edit_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user != comment.author:
+        return redirect('post_detail', pk=comment.post.pk)
+
+    if request.method == 'POST':
+        form = CommentForm(request.POST, instance=comment)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=comment.post.pk)
+    else:
+        form = CommentForm(instance=comment)
+    return render(request, 'blog/edit_comment.html', {'form': form})
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    if request.user == comment.author:
+        comment.delete()
+    return redirect('post_detail', pk=comment.post.pk)
+
+def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['comment_form'] = CommentForm()
+    return context
+
 # Blog Post CRUD Views
 class PostListView(ListView):
     model = Post
@@ -58,6 +103,11 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'blog/post_detail.html'
     context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        return context
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
