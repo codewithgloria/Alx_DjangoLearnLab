@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% if object %}Edit Post{% else %}Create Post{% endif %}</title>
+    <link rel="stylesheet" href="/static/blog/style.css">
+</head>
+<body>
+    <header><h1>My Django Blog</h1></header>
+    <main>
+        <h2>{% if object %}Edit "{{ object.title }}"{% else %}Create New Post{% endif %}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Save</button>
+        </form>
+        <p><a href="{% url 'post_list' %}">Cancel</a></p>
+    </main>
+</body>
+</html>
