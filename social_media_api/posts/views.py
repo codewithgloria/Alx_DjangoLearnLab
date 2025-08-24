@@ -48,3 +48,37 @@ class UserFeedView(generics.ListAPIView):
         user = self.request.user
         following = user.following.all()
         return Post.objects.filter(author__in=following).order_by('-created_at')
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=404)
+
+    like, created = Like.objects.get_or_create(post=post, user=request.user)
+    if created:
+        # Create notification
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb="liked your post",
+            target=post
+        )
+        return Response({'message': 'Post liked'}, status=200)
+    return Response({'message': 'Already liked'}, status=400)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unlike_post(request, pk):
+    try:
+        post = Post.objects.get(pk=pk)
+        like = Like.objects.get(post=post, user=request.user)
+        like.delete()
+        return Response({'message': 'Post unliked'}, status=200)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=404)
+    except Like.DoesNotExist:
+        return Response({'error': 'You haven’t liked this post.'}, status=400)
