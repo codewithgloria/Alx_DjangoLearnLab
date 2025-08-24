@@ -5,8 +5,9 @@ class User(AbstractUser):
     bio = models.TextField(max_length=500, blank=True)
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     followers = models.ManyToManyField('self', symmetrical=False, blank=True)
+    following = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='followers_of') 
 
-    # Fix reverse accessor clashes
+
     groups = models.ManyToManyField(
         'auth.Group',
         blank=True,

@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login
 from rest_framework.authtoken.models import Token
@@ -49,3 +50,51 @@ def profile_view(request):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def follow_user(request, user_id):
+    """
+    Follow a user by ID.
+    """
+    try:
+        target_user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+    if target_user == request.user:
+        return Response(
+            {'error': 'You cannot follow yourself.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    request.user.following.add(target_user)
+    target_user.followers.add(request.user)
+    return Response(
+        {'success': f'You are now following {target_user.username}'},
+        status=status.HTTP_200_OK
+    )
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unfollow_user(request, user_id):
+    """
+    Unfollow a user by ID.
+    """
+    try:
+        target_user = User.objects.get(id=user_id)
+    except User.DoesNotExist:
+        return Response(
+            {'error': 'User not found.'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+    
+     request.user.following.remove(target_user)
+    target_user.followers.remove(request.user)
+    return Response(
+        {'success': f'You unfollowed {target_user.username}'},
+        status=status.HTTP_200_OK
+    )
