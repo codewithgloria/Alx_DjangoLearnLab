@@ -37,11 +37,14 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def user_feed(request):
+class UserFeedView(generics.ListAPIView):
     """
     Display posts from users that the current user is following.
     """
-    following = request.user.following.all()
-    posts = Post.objects.filter(author__in=following).order_by('-created_at')
-    serializer = PostSerializer(posts, many=True, context={'request': request})
-    return Response(serializer.data, status=status.HTTP_200_OK)
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        following = user.following.all()
+        return Post.objects.filter(author__in=following).order_by('-created_at')
