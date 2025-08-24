@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import login
 from .models import User
+from accounts.models import CustomUser
 from rest_framework.authtoken.models import Token
 from .serializers import UserRegistrationSerializer, UserSerializer
 
@@ -150,3 +151,5 @@ class UnfollowUserView(generics.GenericAPIView):
             {'success': f'You unfollowed {target_user.username}'},
             status=status.HTTP_200_OK
         )
+    
+temp_queryset = CustomUser.objects.all() 
