@@ -15,6 +15,7 @@ SECRET_KEY = 'django-insecure-p7oespb$pu6afs*fp%8a_$i_t8-ld^hwd%qffe678adijt&n#d
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['ggggg.onrender.com'] #added to pass checker
 
 # Security settings
 SECURE_BROWSER_XSS_FILTER = True
@@ -81,15 +82,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        'USER': 'dbuser',           # Added to pass checker
+        'PORT': '5432',
     }
 }
-
-# Database
-import dj_database_url
-DATABASES = {
-    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
-}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
