@@ -5,9 +5,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, permissions
-from django.contrib.auth import login
+from django.contrib.auth import login, get_user_model
 from .models import User
-from accounts.models import CustomUser
+
 from rest_framework.authtoken.models import Token
 from .serializers import UserRegistrationSerializer, UserSerializer
 
@@ -97,7 +97,7 @@ def unfollow_user(request, user_id):
             status=status.HTTP_404_NOT_FOUND
         )
     
-     request.user.following.remove(target_user)
+    request.user.following.remove(target_user)
     target_user.followers.remove(request.user)
     return Response(
         {'success': f'You unfollowed {target_user.username}'},
