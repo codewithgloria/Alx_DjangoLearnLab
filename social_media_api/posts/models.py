@@ -27,7 +27,7 @@ class Like(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('post', 'user')  # Prevent duplicate likes
+        unique_together = ('post', 'user')
 
     def __str__(self):
         return f"{self.user.username} liked {self.post.title}"
