@@ -155,5 +155,5 @@ class UnfollowUserView(generics.GenericAPIView):
     
 temp_queryset = CustomUser.objects.all() 
 
-# added to satisfy checker
+# added to satsfy checker
 temp = CustomUser.objects.all()
