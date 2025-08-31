@@ -7,7 +7,6 @@ class User(AbstractUser):
     followers = models.ManyToManyField('self', symmetrical=False, blank=True)
     following = models.ManyToManyField('self', symmetrical=False, blank=True, related_name='followers_of') 
 
-
     groups = models.ManyToManyField(
         'auth.Group',
         blank=True,

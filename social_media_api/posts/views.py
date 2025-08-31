@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions
+from rest_framework import generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters import rest_framework as filters
 from .models import Post, Comment
+from accounts.models import User
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsAuthorOrReadOnly
 
