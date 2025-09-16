@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.decorators import permission_required
 from django.views.generic.detail import DetailView
@@ -73,7 +74,7 @@ def add_book(request):
     return render(request, 'relationship_app/add_book.html', {'form': form})
 
 
-@permission_required('relationship_app.can_change_book', raise_exception=True)
+@permission_required('bookshelf.can_edit', raise_exception=True)
 def edit_book(request, pk):
     book = get_object_or_404(Book, pk=pk)
     if request.method == 'POST':
