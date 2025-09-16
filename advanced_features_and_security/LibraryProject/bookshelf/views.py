@@ -1,3 +1,4 @@
+from .forms import ExampleForm
 from django.shortcuts import render
 from django.contrib.auth.decorators import permission_required
 from relationship_app.models import Book
@@ -16,3 +17,7 @@ def search_books(request):
         #
         books = Book.objects.filter(title__icontains=query)
     return render(request, 'bookshelf/book_list.html', {'books': books})
+
+def example_form_view(request):
+    form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})

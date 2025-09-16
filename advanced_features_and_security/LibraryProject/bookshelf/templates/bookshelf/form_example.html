@@ -7,9 +7,8 @@
 <body>
     <h1>Secure Form Example</h1>
     <form method="post">
-        {% csrf_token %} 
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" required>
+        {% csrf_token %}
+        {{ form.as_p }}
         <button type="submit">Submit</button>
     </form>
 </body>
