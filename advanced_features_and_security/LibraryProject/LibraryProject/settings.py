@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#wfbhp5!a2#*0u4e1_142=+__gii8xifkjo-k8ghy@)ncq1ncp'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -127,3 +127,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Use CustomUser as the default user model
 AUTH_USER_MODEL = 'relationship_app.CustomUser'
+
+# XSS Protection (browser-level)
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Frame protection (prevent clickjacking)
+X_FRAME_OPTIONS = 'DENY'
+
+# HTTPS-only cookies (for production)
+CSRF_COOKIE_SECURE = True   # Ensures CSRF cookie is sent over HTTPS only
+SESSION_COOKIE_SECURE = True  # Same for session cookie
+
+# Content Security Policy (CSP)
+# Example: csp = "default-src 'self'; script-src 'self' https://trusted.cdn.com"
+CSP_DEFAULT_SRC = "'self'"
+CSP_SCRIPT_SRC = "'self'"
+CSP_STYLE_SRC = "'self' 'unsafe-inline'"
+CSP_IMG_SRC = "'self' data:"
+CSP_OBJECT_SRC = "'none'"
+
+# Documentation
+# SECURITY MEASURES IMPLEMENTED
+# - DEBUG = False: Disables debug mode in production
+# - SECURE_BROWSER_XSS_FILTER: Enables XSS filtering in supported browsers
+# - SECURE_CONTENT_TYPE_NOSNIFF: Prevents MIME type sniffing
+# - X_FRAME_OPTIONS = 'DENY': Blocks iframe embedding (clickjacking protection)
+# - CSRF_COOKIE_SECURE & SESSION_COOKIE_SECURE: Cookies only over HTTPS
+# - CSP headers simulated to restrict content sources and reduce XSS risk
+# - All forms include {% csrf_token %} for CSRF protection
+# - ORM used instead of raw SQL to prevent injection

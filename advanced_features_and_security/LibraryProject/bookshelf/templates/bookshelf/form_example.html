@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Example</title>
+</head>
+<body>
+    <h1>Secure Form Example</h1>
+    <form method="post">
+        {% csrf_token %} 
+        <label for="title">Title:</label>
+        <input type="text" name="title" id="title" required>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
