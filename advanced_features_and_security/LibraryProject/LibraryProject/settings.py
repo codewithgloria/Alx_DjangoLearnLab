@@ -157,3 +157,25 @@ CSP_OBJECT_SRC = "'none'"
 # - CSP headers simulated to restrict content sources and reduce XSS risk
 # - All forms include {% csrf_token %} for CSRF protection
 # - ORM used instead of raw SQL to prevent injection
+
+# =============================================================================
+# SECURITY SETTINGS FOR HTTPS AND SECURE COMMUNICATION
+# =============================================================================
+
+# Step 1: Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True  # Forces HTTPS; disable in development if no SSL
+
+# HTTP Strict Transport Security (HSTS)
+# Tells browsers to always use HTTPS for this domain
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Enables HSTS preload list submission
+
+# Step 2: Secure Cookies (sent only over HTTPS)
+SESSION_COOKIE_SECURE = True  # Session cookie won't be sent over HTTP
+CSRF_COOKIE_SECURE = True    # CSRF cookie requires HTTPS
+
+# Step 3: Additional Security Headers
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking via iframe embedding
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME-type sniffing
+SECURE_BROWSER_XSS_FILTER = True   # Enable XSS filter in supported browsers
